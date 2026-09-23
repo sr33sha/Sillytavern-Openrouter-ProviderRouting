@@ -1,0 +1,7 @@
+{
+  "display_name": "OR Provider Routing",
+  "version": "1.0.0",
+  "author": "Sreesha",
+  "js": "index.js",
+  "css": "style.css"
+}
