@@ -76,12 +76,8 @@ const providerMap = {
         'Google'
     ],
 
-    // DeepSeek V3.2
-    'deepseek/deepseek-v3.2': [
-        'Google',
-        'Novita',
-        'SiliconFlow'
-    ],
+    // DeepSeek V3.2 (let OpenRouter route freely)
+    'deepseek/deepseek-v3.2': [],
 
     // DeepSeek Terminus
     'deepseek/deepseek-v3.1-terminus': [
