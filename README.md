@@ -13,3 +13,5 @@ Covers a wide range of models, from GLM 4.6-5.3 (except 5), Kimi k2.5 to k3, Opu
 You can edit index.js and fork this to add your own providers and fallbacks for your own models.
 
 Works for both Sillytavern and Tauri Tavern.
+
+P.S No provider routing for deepseek v3.2 due to OR 429 "Provider returned error" issues, but fallbacsk strictly turned on to combat this.
