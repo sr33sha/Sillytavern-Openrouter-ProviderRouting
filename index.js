@@ -36,30 +36,30 @@ const providerMap = {
     ],
 
     // Kimi
-'moonshotai/kimi-k3': [
-    'Moonshot AI',
-    'Fireworks'
-],
+    'moonshotai/kimi-k3': [
+        'Moonshot AI',
+        'Fireworks'
+    ],
 
-'moonshotai/kimi-k2.7-code': [
-    'Moonshot AI',
-    'Parasail',
-    'Novita',
-],
+    'moonshotai/kimi-k2.7-code': [
+        'Moonshot AI',
+        'Parasail',
+        'Novita',
+    ],
 
-'moonshotai/kimi-k2.6': [
-    'Moonshot AI',
-    'Fireworks',
-    'Novita',
-    'Parasail',
-    'SiliconFlow'
-],
+    'moonshotai/kimi-k2.6': [
+        'Moonshot AI',
+        'Fireworks',
+        'Novita',
+        'Parasail',
+        'SiliconFlow'
+    ],
 
-'moonshotai/kimi-k2.5': [
-    'Moonshot AI',
-    'Novita',
-    'SiliconFlow'
-],
+    'moonshotai/kimi-k2.5': [
+        'Moonshot AI',
+        'Novita',
+        'SiliconFlow'
+    ],
 
     // Gemini Flash
     'google/gemini-3.8-flash': [
@@ -76,11 +76,17 @@ const providerMap = {
         'Google'
     ],
 
-    // DeepSeek V3.2 (let OpenRouter route freely across any provider)
+    // --- DeepSeek family ---
     'deepseek/deepseek-v3.2': [],
+    'deepseek/deepseek-v4.1-flash': [],
+    'deepseek/deepseek-v4-pro-0813': [],
 
-    // DeepSeek Terminus
     'deepseek/deepseek-v3.1-terminus': [
+        'SiliconFlow',
+        'Novita'
+    ],
+
+    'deepseek/deepseek-r1-0528': [
         'SiliconFlow',
         'Novita'
     ],
@@ -92,12 +98,6 @@ const providerMap = {
         'Novita'
     ],
 
-    // R1
-    'deepseek/deepseek-r1-0528': [
-        'SiliconFlow',
-        'Novita'
-    ],
-
     // Mimo
     'xiaomi/mimo-v2.5-pro': [
         'Xiaomi',
@@ -105,7 +105,8 @@ const providerMap = {
     ]
 };
 
-// Pin each model's provider order (or leave it empty for free routing, as with V3.2).
+// Pin each model's provider order (or leave it empty for free routing, as with the
+// BYOK DeepSeek models above).
 eventSource.on(
     event_types.CHATCOMPLETION_MODEL_CHANGED,
     (model) => {
@@ -133,10 +134,16 @@ eventSource.on(
 );
 
 // Provider-level fallback ("Allow fallback providers"), NOT model-level fallback
-// ("Allow fallback routes" — that swaps to a different LLM entirely, never wanted here).
-// Only DeepSeek V3.2 gets free rein to fall back across any provider serving it.
-// Every other model stays hard-locked to its providerMap list above, on purpose.
-const freeRoutingModels = new Set(['deepseek/deepseek-v3.2']);
+// ("Allow fallback routes" - that swaps to a different LLM entirely, never wanted here).
+// Only the BYOK DeepSeek models (empty provider list above: V3.2, V4.1 Flash, V4 Pro 0813)
+// get free rein to fall back across any provider serving them. Every other model - including
+// DeepSeek R1 0528 and V3.1 Terminus, which don't have an official DeepSeek route to fall
+// back to anyway - stays hard-locked to its providerMap list, no fallback, on purpose.
+const freeRoutingModels = new Set([
+    'deepseek/deepseek-v3.2',
+    'deepseek/deepseek-v4.1-flash',
+    'deepseek/deepseek-v4-pro-0813',
+]);
 
 eventSource.on(
     event_types.CHATCOMPLETION_MODEL_CHANGED,
