@@ -76,12 +76,8 @@ const providerMap = {
         'Google'
     ],
 
-    // DeepSeek V3.2
-    'deepseek/deepseek-v3.2': [
-        'Google',
-        'Novita',
-        'SiliconFlow'
-    ],
+    // DeepSeek V3.2 (let OpenRouter route freely)
+    'deepseek/deepseek-v3.2': [],
 
     // DeepSeek Terminus
     'deepseek/deepseek-v3.1-terminus': [
@@ -147,5 +143,21 @@ console.log(
     'FINAL',
     oai_settings.openrouter_providers
 );
+    }
+);
+
+// "Allow fallback routes" is a global checkbox; keep it on only for these models.
+const fallbackModels = new Set(['deepseek/deepseek-v3.2']);
+
+eventSource.on(
+    event_types.CHATCOMPLETION_MODEL_CHANGED,
+    (model) => {
+        const wanted = fallbackModels.has(model);
+        const box = document.querySelector('#openrouter_use_fallback');
+        if (box) {
+            box.checked = wanted;
+            box.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        oai_settings.openrouter_use_fallback = wanted;
     }
 );
