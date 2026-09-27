@@ -76,7 +76,7 @@ const providerMap = {
         'Google'
     ],
 
-    // DeepSeek V3.2 (let OpenRouter route freely)
+    // DeepSeek V3.2 (let OpenRouter route freely across any provider)
     'deepseek/deepseek-v3.2': [],
 
     // DeepSeek Terminus
@@ -105,6 +105,7 @@ const providerMap = {
     ]
 };
 
+// Pin each model's provider order (or leave it empty for free routing, as with V3.2).
 eventSource.on(
     event_types.CHATCOMPLETION_MODEL_CHANGED,
     (model) => {
@@ -116,48 +117,36 @@ eventSource.on(
         if (!providers) return;
 
         if (!providerMap[model]) return;
-		console.log(
-    'BEFORE',
-    oai_settings.openrouter_providers
-);
-
-
 
         Array.from(providers.options).forEach(option => {
             option.selected = providerMap[model].includes(
                 option.value
             );
         });
-		console.log(
-    Array.from(providers.selectedOptions)
-        .map(o => o.value)
-);
 
         providers.dispatchEvent(
-    new Event('change', { bubbles: true })
-);
+            new Event('change', { bubbles: true })
+        );
 
-oai_settings.openrouter_providers = [...providerMap[model]];
-
-console.log(
-    'FINAL',
-    oai_settings.openrouter_providers
-);
+        oai_settings.openrouter_providers = [...providerMap[model]];
     }
 );
 
-// "Allow fallback routes" is a global checkbox; keep it on only for these models.
-const fallbackModels = new Set(['deepseek/deepseek-v3.2']);
+// Provider-level fallback ("Allow fallback providers"), NOT model-level fallback
+// ("Allow fallback routes" — that swaps to a different LLM entirely, never wanted here).
+// Only DeepSeek V3.2 gets free rein to fall back across any provider serving it.
+// Every other model stays hard-locked to its providerMap list above, on purpose.
+const freeRoutingModels = new Set(['deepseek/deepseek-v3.2']);
 
 eventSource.on(
     event_types.CHATCOMPLETION_MODEL_CHANGED,
     (model) => {
-        const wanted = fallbackModels.has(model);
-        const box = document.querySelector('#openrouter_use_fallback');
+        const wanted = freeRoutingModels.has(model);
+        const box = document.querySelector('#openrouter_allow_fallbacks');
         if (box) {
             box.checked = wanted;
             box.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        oai_settings.openrouter_use_fallback = wanted;
+        oai_settings.openrouter_allow_fallbacks = wanted;
     }
 );
