@@ -61,12 +61,16 @@ const providerMap = {
         'SiliconFlow'
     ],
 
-    // Gemini Flash
+    // Gemini
     'google/gemini-3.8-flash': [
         'Google'
     ],
 
     'google/gemini-3.7-flash': [
+        'Google'
+    ],
+
+    'google/gemini-4-argon': [
         'Google'
     ],
 
