@@ -36,6 +36,10 @@ const providerMap = {
     ],
 
     // Kimi
+    'moonshotai/kimi-k3.1-pro': [
+        'Moonshot AI'
+    ],
+
     'moonshotai/kimi-k3': [
         'Moonshot AI',
         'Fireworks'
